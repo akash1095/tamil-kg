@@ -1,0 +1,35 @@
+# coverage_gap.sparql
+# How well does Wikidata cover people who have a Tamil Wikipedia article?
+# Two queries, each starting with a "#--- query: <name>" line. coverage_gap.py runs them
+# (and runs query "relation" once per property by rewriting its VALUES line).
+# Each block also runs as-is at https://query.wikidata.org/.
+
+#--- query: people
+# Humans (P31 = Q5) with a Tamil Wikipedia article.
+SELECT (COUNT(DISTINCT ?person) AS ?people) WHERE {
+  ?article schema:about ?person ;
+           schema:isPartOf <https://ta.wikipedia.org/> .
+  ?person wdt:P31 wd:Q5 .
+}
+
+#--- query: relation
+# For one property: how many of those people have it, how many values there are,
+# and how many of the values have a Tamil / an English label.
+# Label counts only mean something for item-valued properties (not P569/P570).
+SELECT ?prop
+       (COUNT(DISTINCT ?person) AS ?people_with_prop)
+       (COUNT(?value) AS ?values)
+       (SUM(?has_ta) AS ?values_with_ta_label)
+       (SUM(?has_en) AS ?values_with_en_label)
+WHERE {
+  VALUES ?prop { wdt:P19 }
+  ?article schema:about ?person ;
+           schema:isPartOf <https://ta.wikipedia.org/> .
+  ?person wdt:P31 wd:Q5 ;
+          ?prop ?value .
+  OPTIONAL { ?value rdfs:label ?lab_ta . FILTER(LANG(?lab_ta) = "ta") }
+  OPTIONAL { ?value rdfs:label ?lab_en . FILTER(LANG(?lab_en) = "en") }
+  BIND(IF(BOUND(?lab_ta), 1, 0) AS ?has_ta)
+  BIND(IF(BOUND(?lab_en), 1, 0) AS ?has_en)
+}
+GROUP BY ?prop

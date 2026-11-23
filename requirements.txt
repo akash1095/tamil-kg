@@ -1,0 +1,26 @@
+# Main environment: Sarvam-1, the 3-4B instruct model, IndicTrans2, evaluation.
+# Python 3.10+. On Colab/Kaggle, torch is preinstalled; locally, install torch
+# for your CUDA version first (https://pytorch.org/get-started/locally/).
+# After the first working install, run:  pip freeze > requirements.lock.txt
+# and log the versions in run_log.md (the paper reports them).
+
+torch>=2.3
+transformers>=4.51,<5.0      # Gemma 3 / Qwen3-class models need >=4.50/4.51
+accelerate>=0.30
+sentencepiece>=0.2
+protobuf>=4.25
+requests>=2.31               # Wikidata SPARQL + wbsearchentities API
+pandas>=2.0
+scikit-learn>=1.3            # cohen_kappa_score
+tqdm>=4.66
+python-dotenv>=1.0           # reads the API key from .env
+
+# Translate-then-extract (RQ1b). Verify the package name/version on PyPI before installing:
+# IndicTransToolkit
+
+# Large-LLM client: uncomment the one you pick and record the model name + access date.
+# anthropic
+# openai
+
+# Agaram 2.5B (standby only) needs transformers 5.x: use a separate environment,
+# never this one.

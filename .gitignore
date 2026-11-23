@@ -1,0 +1,19 @@
+# secrets
+.env
+# API / SPARQL response cache (rebuildable; can be large)
+data/cache/*
+!data/cache/.gitkeep
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+# model weights and HF cache
+*.safetensors
+*.bin
+hf_cache/
+# OS
+desktop.ini
+.DS_Store
+Thumbs.db
